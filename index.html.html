@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Maids Portal · Confirm Your Details</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0e172a; --ink-soft:#64748b; --muted:#94a3b8;
+    --border:#e2e8f0; --border-strong:#cbd5e1; --bg:#f4f5fa; --card:#ffffff;
+    --indigo:#6366f1; --indigo-dark:#4f46e5;
+    --indigo-chip-bg:#dfe7ff; --indigo-chip-text:#3730a3;
+    --teal:#07aac9; --topbar-indigo:#5b4fe5;
+    --green-bg:#dcfce7; --green-text:#156534;
+    --neutral-bg:#f1f5f9; --neutral-text:#334155;
+    --avatar-bg:#1b1b1b;
+    --logo-blue:#4777bb; --logo-orange:#f5860e;
+    --thead-bg:#f9fafc; --thead-text:#64748b;
+    --btn-ghost-bg:#efefef;
+    --red:#c0392b;
+    --radius:14px;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:'Inter',-apple-system,sans-serif;color:var(--ink);background:var(--bg);font-size:14px;}
+  .layout{display:flex;min-height:100vh;}
+
+  .sidebar{width:260px;background:#fff;border-right:1px solid var(--border);padding:20px 14px;flex:none;}
+  .logo-row{display:flex;align-items:center;justify-content:space-between;padding:0 6px 16px;}
+  .logo .brand{font-size:23px;font-weight:800;line-height:1;color:var(--logo-blue);}
+  .logo .tagline{font-size:10.5px;font-weight:700;margin-top:4px;}
+  .logo .tagline .p1{color:var(--logo-blue);} .logo .tagline .p2{color:var(--logo-orange);}
+  .collapse-btn{color:var(--muted);font-size:16px;background:none;border:none;cursor:pointer;}
+  .search-box{display:flex;align-items:center;gap:8px;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:9px 12px;margin-bottom:18px;color:var(--muted);font-size:13.5px;}
+  .nav-group{margin-bottom:6px;}
+  .nav-label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;padding:10px 10px 6px;}
+  .nav-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:9px;color:var(--ink-soft);font-size:13.5px;font-weight:500;cursor:pointer;text-decoration:none;}
+  .nav-item:hover{background:#fafafe;}
+  .nav-item.active{background:var(--indigo-chip-bg);color:var(--indigo-dark);font-weight:700;position:relative;}
+  .nav-item.active::before{content:'';position:absolute;left:-14px;top:6px;bottom:6px;width:3px;background:var(--indigo);border-radius:2px;}
+  .nav-item svg{width:17px;height:17px;flex:none;}
+
+  .main{flex:1;min-width:0;}
+  .topbar{display:flex;align-items:center;justify-content:space-between;padding:22px 32px;}
+  .topbar-title{display:flex;align-items:center;gap:10px;font-size:22px;font-weight:800;}
+  .topbar-title .bar{width:4px;height:22px;background:var(--indigo);border-radius:2px;}
+  .topbar-right{display:flex;align-items:center;gap:14px;}
+  .icon-circle{width:38px;height:38px;border-radius:999px;display:flex;align-items:center;justify-content:center;color:#fff;}
+  .icon-circle.teal{background:var(--teal);}
+  .icon-circle.indigo{background:var(--topbar-indigo);}
+  .user-chip{display:flex;align-items:center;gap:8px;font-weight:600;font-size:14px;}
+  .avatar-photo{width:34px;height:34px;border-radius:999px;background:var(--avatar-bg);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;}
+
+  .content{padding:0 32px 40px;}
+  .page-lede{color:var(--ink-soft);font-size:14px;line-height:1.6;max-width:90ch;margin:0 0 20px;}
+
+  .status-bar{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;margin-bottom:22px;flex-wrap:wrap;}
+  .pill{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:700;padding:7px 14px;border-radius:999px;}
+  .pill.good{background:var(--green-bg);color:var(--green-text);}
+  .status-bar .spacer{flex:1;}
+  .btn{display:inline-flex;align-items:center;gap:8px;height:42px;padding:0 18px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;flex:none;}
+  .btn-ghost{background:var(--btn-ghost-bg);border:none;color:var(--ink);}
+  .btn-ghost:hover{background:#e2e2e2;}
+  .btn-primary{background:var(--indigo);border:none;color:#fff;}
+  .btn-primary:hover{background:var(--indigo-dark);}
+  .btn-primary:disabled{background:#c7c9f5;cursor:not-allowed;}
+
+  .section-title{font-size:15px;font-weight:800;margin:26px 0 4px;}
+
+  .table-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow-x:auto;}
+  table{width:100%;min-width:1000px;border-collapse:collapse;table-layout:fixed;}
+  thead tr{background:var(--thead-bg);}
+  th{text-align:left;padding:12px 16px;font-size:11px;font-weight:700;color:var(--thead-text);text-transform:uppercase;letter-spacing:.04em;}
+  td{padding:16px;border-top:1px solid var(--border);vertical-align:top;}
+  .emp-name{font-weight:700;font-size:14px;color:var(--ink);}
+  .emp-email{color:var(--ink-soft);font-size:12.5px;margin-top:1px;}
+  .chip{display:inline-flex;align-items:center;background:var(--indigo-chip-bg);color:var(--indigo-chip-text);font-size:12.5px;font-weight:700;padding:4px 11px;border-radius:999px;margin:0 4px 4px 0;}
+  .chip-pct{color:var(--indigo-chip-text);opacity:.7;font-weight:600;margin-left:4px;}
+
+  .field-select{position:relative;min-width:0;flex:1;}
+  .select-box{display:flex;align-items:center;justify-content:space-between;gap:8px;border:1px solid var(--border-strong);border-radius:9px;padding:9px 12px;font-size:13.5px;color:var(--ink);cursor:pointer;background:#fff;min-height:40px;}
+  .select-box span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .select-box svg{flex:none;color:var(--muted);}
+  .select-panel{display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;background:#fff;border:1px solid var(--border);border-radius:10px;box-shadow:0 12px 28px rgba(14,23,42,.14);padding:8px;z-index:20;max-height:240px;overflow-y:auto;}
+  .select-panel.open{display:block;}
+  .select-opt{display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:7px;font-size:14px;cursor:pointer;}
+  .select-opt:hover{background:var(--bg);}
+  .select-opt input{accent-color:var(--indigo);}
+  .row-with-btn{display:flex;align-items:flex-start;gap:8px;min-width:0;}
+  .changed-tag{display:inline-block;font-size:10.5px;font-weight:700;color:var(--indigo-dark);background:var(--indigo-chip-bg);padding:2px 8px;border-radius:999px;margin-top:6px;}
+
+  .split-editor{min-width:0;}
+  .split-line-edit{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px;font-size:12.5px;}
+  .split-line-edit span:first-child{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:140px;}
+  .split-line-edit input{width:58px;flex:none;text-align:right;border:1px solid var(--border-strong);border-radius:7px;padding:5px 7px;font-size:13px;font-family:inherit;color:var(--ink);}
+  .split-total-line{font-size:12px;font-weight:700;margin-top:2px;}
+  .split-total-line.ok{color:var(--green-text);}
+  .split-total-line.bad{color:var(--red);}
+  .no-split{color:var(--muted);font-size:13px;}
+
+  .actions-row{display:flex;align-items:center;gap:12px;margin-top:20px;}
+
+  .done-banner{display:none;background:var(--green-bg);border:1px solid #bbe6c9;border-radius:var(--radius);padding:20px 24px;align-items:flex-start;gap:14px;margin-bottom:20px;}
+  .done-banner.show{display:flex;}
+  .done-banner svg{flex:none;color:var(--green-text);width:22px;height:22px;margin-top:1px;}
+  .done-banner .title{font-weight:800;font-size:15px;color:#0f5c30;}
+  .done-banner .sub{font-size:13px;color:#1e6b3d;margin-top:2px;}
+  .done-banner a{color:var(--indigo-dark);font-weight:700;text-decoration:none;}
+  .locked{opacity:.55;pointer-events:none;filter:grayscale(.3);}
+
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:12px 20px;border-radius:10px;font-size:13.5px;font-weight:600;opacity:0;pointer-events:none;transition:all .25s ease;z-index:100;}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+</style>
+</head>
+<body>
+<div class="layout">
+  <div class="sidebar">
+    <div class="logo-row">
+      <div class="logo">
+        <div class="brand">maids.cc</div>
+        <div class="tagline"><span class="p1">+ nannies</span> <span class="p2">+ visa services</span></div>
+      </div>
+      <button class="collapse-btn">«</button>
+    </div>
+    <div class="search-box">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      Search menu...
+    </div>
+    <div class="nav-group">
+      <div class="nav-label">User Overview</div>
+      <a class="nav-item active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>My Directory</a>
+      <a class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Apps Directory</a>
+    </div>
+    <div class="nav-group">
+      <div class="nav-label">My Activity</div>
+      <a class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>My Tasks</a>
+      <a class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>My Requests</a>
+    </div>
+    <div class="nav-group">
+      <div class="nav-label">My Resources</div>
+      <a class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>My Accesses</a>
+      <a class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>My Assets</a>
+      <a class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7h-9"/><path d="M14 17H5"/><circle cx="17" cy="17" r="3"/><circle cx="7" cy="7" r="3"/></svg>My Buckets</a>
+      <a class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="10" rx="2"/><circle cx="12" cy="16" r="1"/><path d="M8 11V7a4 4 0 1 1 8 0"/></svg>My Security</a>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-title"><span class="bar"></span>Confirm Your Details</div>
+      <div class="topbar-right">
+        <div class="icon-circle teal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"/><line x1="15.4" y1="6.5" x2="8.6" y2="10.5"/></svg></div>
+        <div class="icon-circle indigo"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg></div>
+        <div class="user-chip"><div class="avatar-photo">TI</div>Toufic Al Mabsout <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div>
+      </div>
+    </div>
+
+    <div class="content">
+      <p class="page-lede">This month we're double-checking a few details we use for payroll and reporting. Everything below is pre-filled with what's on file — edit anything that's changed, then confirm.</p>
+
+      <div class="done-banner" id="doneBanner">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        <div>
+          <div class="title">Confirmed on <span id="doneDate"></span></div>
+          <div class="sub" id="doneSummary"></div>
+          <div class="sub" style="margin-top:8px;"><a href="javascript:void(0)" onclick="makeCorrection()">Make a correction</a></div>
+        </div>
+      </div>
+
+      <div class="status-bar" id="statusBar">
+        <span class="pill good" id="pillChanges">0 changes</span>
+        <span class="spacer"></span>
+        <button class="btn btn-ghost" onclick="resetForm()">Reset</button>
+        <button class="btn btn-primary" id="confirmBtn" onclick="confirmForm()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg>
+          Confirm
+        </button>
+      </div>
+
+      <div class="section-title">Your Details</div>
+      <div class="table-card" id="formCard">
+        <table>
+          <thead>
+            <tr>
+              <th style="width:200px;">Employee</th>
+              <th style="width:280px;">Departments</th>
+              <th style="width:250px;">Job Title</th>
+              <th style="width:270px;">Split</th>
+            </tr>
+          </thead>
+          <tbody id="rowBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const ALL_DEPARTMENTS = ['Broadcasting','ChatCC','Ziwo','AI Implementation','R&D','Data Analytics and Reporting',
+  'Marketing','Customer Experience','CC Live-in L1','CC Live-out L1','Office Staff Payroll','Cybersecurity','Jira Administration'];
+const ALL_TITLES = ['Process Improvement Leader','AI Engineer','Backend Engineer','QA Engineer','ML Engineer','Data Analyst','Business Analyst'];
+
+const EMP = {
+  name:'Toufic Izzat Al Mabsout', email:'toufic.almabsout@maids.cc',
+  depts:[{name:'Broadcasting', pct:50},{name:'ChatCC', pct:20},{name:'Ziwo', pct:30}],
+  title:'Process Improvement Leader',
+};
+
+function initState(){
+  EMP.newDepts = EMP.depts.map(d=>d.name);
+  EMP.newTitle = EMP.title;
+  const split = {}; EMP.depts.forEach(d=>split[d.name]=d.pct); EMP.newSplit = split;
+}
+function fmtPct(n){ return (Math.round(n*10)/10).toString().replace(/\.0$/,''); }
+function deptChips(depts){ return depts.map(d=>'<span class="chip">'+d.name+'<span class="chip-pct">'+fmtPct(d.pct)+'%</span></span>').join(''); }
+function needsSplit(){ return EMP.newDepts.length >= 2; }
+function sumSplit(s){ return Object.values(s).reduce((a,b)=>a+b,0); }
+function isValid(){ return !needsSplit() || Math.abs(sumSplit(EMP.newSplit)-100)<=0.1; }
+function deptChanged(){ return JSON.stringify([...EMP.newDepts].sort()) !== JSON.stringify(EMP.depts.map(d=>d.name).sort()); }
+function titleChanged(){ return EMP.newTitle !== EMP.title; }
+function splitChanged(){
+  const curMap = {}; EMP.depts.forEach(d=>curMap[d.name]=d.pct);
+  return Object.keys(EMP.newSplit).some(k => Math.abs((curMap[k]||0) - EMP.newSplit[k]) > 0.05) || Object.keys(curMap).length !== Object.keys(EMP.newSplit).length;
+}
+function hasChange(){ return deptChanged() || titleChanged() || splitChanged(); }
+
+function render(){
+  const dChanged = deptChanged();
+  const newDeptsCell = '<div class="row-with-btn"><div class="field-select">'
+    + '<div class="select-box" onclick="toggleSelect(\'dept\')">'
+    + '<span>'+EMP.newDepts.join(', ')+'</span>'
+    + '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>'
+    + '</div>'
+    + '<div class="select-panel" id="panel-dept">'
+    + ALL_DEPARTMENTS.map(d=>'<label class="select-opt"><input type="checkbox" value="'+d+'" '+(EMP.newDepts.includes(d)?'checked':'')+' onchange="onDeptToggle(\''+d+'\',this.checked)">'+d+'</label>').join('')
+    + '</div></div></div>'
+    + (dChanged?'<span class="changed-tag">Changed</span>':'');
+
+  const tChanged = titleChanged();
+  const newTitleCell = '<div class="row-with-btn"><div class="field-select">'
+    + '<div class="select-box" onclick="toggleSelect(\'title\')">'
+    + '<span>'+EMP.newTitle+'</span>'
+    + '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>'
+    + '</div>'
+    + '<div class="select-panel" id="panel-title">'
+    + ALL_TITLES.map(t=>'<label class="select-opt"><input type="radio" name="title" value="'+t+'" '+(EMP.newTitle===t?'checked':'')+' onchange="onTitlePick(\''+t+'\')">'+t+'</label>').join('')
+    + '</div></div></div>'
+    + (tChanged?'<span class="changed-tag">Changed</span>':'');
+
+  let splitCell;
+  if(!needsSplit()){
+    splitCell = '<span class="no-split">Single department — 100%</span>';
+  } else {
+    const total = sumSplit(EMP.newSplit);
+    const ok = Math.abs(total-100)<=0.1;
+    const sChanged = splitChanged();
+    splitCell = '<div class="split-editor">'
+      + EMP.newDepts.map(d=>'<div class="split-line-edit"><span>'+d+'</span>'
+        + '<input type="text" inputmode="decimal" value="'+(EMP.newSplit[d]!==undefined?fmtPct(EMP.newSplit[d]):'0')+'" data-dept="'+d+'" oninput="onSplitInput(\''+d+'\',this.value)"></div>').join('')
+      + '<div class="split-total-line '+(ok?'ok':'bad')+'">Total: '+fmtPct(total)+'%</div>'
+      + (sChanged?'<span class="changed-tag">Changed</span>':'')
+      + '</div>';
+  }
+
+  document.getElementById('rowBody').innerHTML =
+    '<tr><td><div class="emp-name">'+EMP.name+'</div><div class="emp-email">'+EMP.email+'</div></td>'
+    + '<td>'+newDeptsCell+'</td>'
+    + '<td>'+newTitleCell+'</td>'
+    + '<td>'+splitCell+'</td></tr>';
+
+  const changes = hasChange() ? 1 : 0;
+  document.getElementById('pillChanges').textContent = (hasChange() ? 'Changes ready to confirm' : '0 changes');
+  document.getElementById('confirmBtn').disabled = !isValid();
+}
+
+function toggleSelect(key){
+  document.querySelectorAll('.select-panel.open').forEach(p=>{ if(p.id!=='panel-'+key) p.classList.remove('open'); });
+  document.getElementById('panel-'+key).classList.toggle('open');
+}
+document.addEventListener('click', e=>{
+  if(!e.target.closest('.field-select')) document.querySelectorAll('.select-panel.open').forEach(p=>p.classList.remove('open'));
+});
+
+function onDeptToggle(dept, checked){
+  let set = [...EMP.newDepts];
+  if(checked){ if(!set.includes(dept)) set.push(dept); } else { set = set.filter(d=>d!==dept); }
+  EMP.newDepts = set;
+  const newSplit = {};
+  set.forEach(d=>{ newSplit[d] = EMP.newSplit[d] !== undefined ? EMP.newSplit[d] : 0; });
+  EMP.newSplit = newSplit;
+  render();
+}
+function onTitlePick(t){ EMP.newTitle = t; render(); }
+function onSplitInput(dept, val){
+  let v = parseFloat(val); if(isNaN(v)) v = 0;
+  EMP.newSplit[dept] = Math.max(0, Math.min(100, v));
+  render();
+  const input = document.querySelector('input[data-dept="'+CSS.escape(dept)+'"]');
+  if(input){ input.focus(); try{ const l=input.value.length; input.setSelectionRange(l,l); }catch(e){} }
+}
+
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2600);
+}
+function resetForm(){
+  initState();
+  render();
+  showToast('Reset to what\'s on file');
+}
+function confirmForm(){
+  if(!isValid()) return;
+  const d = new Date();
+  document.getElementById('doneDate').textContent = d.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
+  const bits = ['Departments: ' + EMP.newDepts.join(', '), 'Job title: ' + EMP.newTitle];
+  if(needsSplit()) bits.push('Split: ' + Object.entries(EMP.newSplit).map(([d,p])=>d+' '+fmtPct(p)+'%').join(', '));
+  document.getElementById('doneSummary').innerHTML = bits.join(' · ');
+  document.getElementById('doneBanner').classList.add('show');
+  document.getElementById('statusBar').classList.add('locked');
+  document.getElementById('formCard').classList.add('locked');
+  showToast('Confirmed — thank you');
+}
+function makeCorrection(){
+  document.getElementById('doneBanner').classList.remove('show');
+  document.getElementById('statusBar').classList.remove('locked');
+  document.getElementById('formCard').classList.remove('locked');
+}
+
+initState();
+render();
+</script>
+</body>
+</html>
