@@ -60,6 +60,7 @@
   .status-bar .spacer{flex:1;}
   .btn{display:inline-flex;align-items:center;gap:8px;height:42px;padding:0 18px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;flex:none;}
   .btn-ghost{background:var(--btn-ghost-bg);border:none;color:var(--ink);}
+  .btn-ghost:disabled{opacity:.5;cursor:not-allowed;}
   .btn-ghost:hover{background:#e2e2e2;}
   .btn-primary{background:var(--indigo);border:none;color:#fff;}
   .btn-primary:hover{background:var(--indigo-dark);}
@@ -67,8 +68,8 @@
 
   .section-title{font-size:15px;font-weight:800;margin:26px 0 4px;}
 
-  .table-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow-x:auto;}
-  table{width:100%;min-width:1000px;border-collapse:collapse;table-layout:fixed;}
+  .table-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);}
+  table{width:100%;border-collapse:collapse;table-layout:fixed;}
   thead tr{background:var(--thead-bg);}
   th{text-align:left;padding:12px 16px;font-size:11px;font-weight:700;color:var(--thead-text);text-transform:uppercase;letter-spacing:.04em;}
   td{padding:16px;border-top:1px solid var(--border);vertical-align:top;}
@@ -88,6 +89,11 @@
   .select-opt input{accent-color:var(--indigo);}
   .row-with-btn{display:flex;align-items:flex-start;gap:8px;min-width:0;}
   .changed-tag{display:inline-block;font-size:10.5px;font-weight:700;color:var(--indigo-dark);background:var(--indigo-chip-bg);padding:2px 8px;border-radius:999px;margin-top:6px;}
+  .th-with-info{display:flex;align-items:center;gap:5px;}
+  .info-icon{position:relative;display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;border-radius:999px;background:var(--muted);color:#fff;font-size:9.5px;font-weight:700;font-style:normal;cursor:help;flex:none;}
+  .info-icon .tooltip{display:none;position:absolute;bottom:calc(100% + 7px);left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;font-size:11.5px;font-weight:500;line-height:1.4;padding:8px 10px;border-radius:7px;width:200px;text-transform:none;letter-spacing:normal;z-index:30;box-shadow:0 8px 20px rgba(14,23,42,.18);}
+  .info-icon .tooltip::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:var(--ink);}
+  .info-icon:hover .tooltip{display:block;}
 
   .split-editor{min-width:0;}
   .split-line-edit{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px;font-size:12.5px;}
@@ -170,7 +176,7 @@
       <div class="status-bar" id="statusBar">
         <span class="pill good" id="pillChanges">0 changes</span>
         <span class="spacer"></span>
-        <button class="btn btn-ghost" onclick="resetForm()">Reset</button>
+        <button class="btn btn-ghost" id="resetBtn" onclick="resetForm()">Reset</button>
         <button class="btn btn-primary" id="confirmBtn" onclick="confirmForm()">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg>
           Confirm
@@ -182,10 +188,11 @@
         <table>
           <thead>
             <tr>
-              <th style="width:200px;">Employee</th>
-              <th style="width:280px;">Departments</th>
-              <th style="width:250px;">Job Title</th>
-              <th style="width:270px;">Split</th>
+              <th style="width:170px;">Employee</th>
+              <th style="width:220px;"><span class="th-with-info">Departments<span class="info-icon">i<span class="tooltip">The department(s) you currently spend your working time in.</span></span></span></th>
+              <th style="width:200px;"><span class="th-with-info">Job Title<span class="info-icon">i<span class="tooltip">Your current role or title on file.</span></span></span></th>
+              <th style="width:200px;"><span class="th-with-info">Direct Manager<span class="info-icon">i<span class="tooltip">The person you report to day-to-day.</span></span></span></th>
+              <th style="width:270px;"><span class="th-with-info">Effort Split<span class="info-icon">i<span class="tooltip">The % of your time spent in each department. Only applies if you have 2 or more departments, and must total exactly 100%.</span></span></span></th>
             </tr>
           </thead>
           <tbody id="rowBody"></tbody>
@@ -201,16 +208,19 @@
 const ALL_DEPARTMENTS = ['Broadcasting','ChatCC','Ziwo','AI Implementation','R&D','Data Analytics and Reporting',
   'Marketing','Customer Experience','CC Live-in L1','CC Live-out L1','Office Staff Payroll','Cybersecurity','Jira Administration'];
 const ALL_TITLES = ['Process Improvement Leader','AI Engineer','Backend Engineer','QA Engineer','ML Engineer','Data Analyst','Business Analyst'];
+const ALL_MANAGERS = ['MHD Amin Mazen Aljebbeh','Mario Andre Gharios','Chady Younan','Ali Hisham Hamdar','Georgina Khalil Wakim','Diana Charif Hamasny'];
 
 const EMP = {
   name:'Toufic Izzat Al Mabsout', email:'toufic.almabsout@maids.cc',
   depts:[{name:'Broadcasting', pct:50},{name:'ChatCC', pct:20},{name:'Ziwo', pct:30}],
   title:'Process Improvement Leader',
+  manager:'MHD Amin Mazen Aljebbeh',
 };
 
 function initState(){
   EMP.newDepts = EMP.depts.map(d=>d.name);
   EMP.newTitle = EMP.title;
+  EMP.newManager = EMP.manager;
   const split = {}; EMP.depts.forEach(d=>split[d.name]=d.pct); EMP.newSplit = split;
 }
 function fmtPct(n){ return (Math.round(n*10)/10).toString().replace(/\.0$/,''); }
@@ -220,11 +230,12 @@ function sumSplit(s){ return Object.values(s).reduce((a,b)=>a+b,0); }
 function isValid(){ return !needsSplit() || Math.abs(sumSplit(EMP.newSplit)-100)<=0.1; }
 function deptChanged(){ return JSON.stringify([...EMP.newDepts].sort()) !== JSON.stringify(EMP.depts.map(d=>d.name).sort()); }
 function titleChanged(){ return EMP.newTitle !== EMP.title; }
+function managerChanged(){ return EMP.newManager !== EMP.manager; }
 function splitChanged(){
   const curMap = {}; EMP.depts.forEach(d=>curMap[d.name]=d.pct);
   return Object.keys(EMP.newSplit).some(k => Math.abs((curMap[k]||0) - EMP.newSplit[k]) > 0.05) || Object.keys(curMap).length !== Object.keys(EMP.newSplit).length;
 }
-function hasChange(){ return deptChanged() || titleChanged() || splitChanged(); }
+function hasChange(){ return deptChanged() || titleChanged() || managerChanged() || splitChanged(); }
 
 function render(){
   const dChanged = deptChanged();
@@ -249,6 +260,17 @@ function render(){
     + '</div></div></div>'
     + (tChanged?'<span class="changed-tag">Changed</span>':'');
 
+  const mChanged = managerChanged();
+  const newManagerCell = '<div class="row-with-btn"><div class="field-select">'
+    + '<div class="select-box" onclick="toggleSelect(\'manager\')">'
+    + '<span>'+EMP.newManager+'</span>'
+    + '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>'
+    + '</div>'
+    + '<div class="select-panel" id="panel-manager">'
+    + ALL_MANAGERS.map(m=>'<label class="select-opt"><input type="radio" name="manager" value="'+m+'" '+(EMP.newManager===m?'checked':'')+' onchange="onManagerPick(\''+m+'\')">'+m+'</label>').join('')
+    + '</div></div></div>'
+    + (mChanged?'<span class="changed-tag">Changed</span>':'');
+
   let splitCell;
   if(!needsSplit()){
     splitCell = '<span class="no-split">Single department — 100%</span>';
@@ -268,6 +290,7 @@ function render(){
     '<tr><td><div class="emp-name">'+EMP.name+'</div><div class="emp-email">'+EMP.email+'</div></td>'
     + '<td>'+newDeptsCell+'</td>'
     + '<td>'+newTitleCell+'</td>'
+    + '<td>'+newManagerCell+'</td>'
     + '<td>'+splitCell+'</td></tr>';
 
   const changes = hasChange() ? 1 : 0;
@@ -293,6 +316,7 @@ function onDeptToggle(dept, checked){
   render();
 }
 function onTitlePick(t){ EMP.newTitle = t; render(); }
+function onManagerPick(m){ EMP.newManager = m; render(); }
 function onSplitInput(dept, val){
   let v = parseFloat(val); if(isNaN(v)) v = 0;
   EMP.newSplit[dept] = Math.max(0, Math.min(100, v));
@@ -315,18 +339,22 @@ function confirmForm(){
   if(!isValid()) return;
   const d = new Date();
   document.getElementById('doneDate').textContent = d.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
-  const bits = ['Departments: ' + EMP.newDepts.join(', '), 'Job title: ' + EMP.newTitle];
-  if(needsSplit()) bits.push('Split: ' + Object.entries(EMP.newSplit).map(([d,p])=>d+' '+fmtPct(p)+'%').join(', '));
+  const bits = ['Departments: ' + EMP.newDepts.join(', '), 'Job title: ' + EMP.newTitle, 'Manager: ' + EMP.newManager];
+  if(needsSplit()) bits.push('Effort split: ' + Object.entries(EMP.newSplit).map(([d,p])=>d+' '+fmtPct(p)+'%').join(', '));
   document.getElementById('doneSummary').innerHTML = bits.join(' · ');
   document.getElementById('doneBanner').classList.add('show');
   document.getElementById('statusBar').classList.add('locked');
   document.getElementById('formCard').classList.add('locked');
+  document.getElementById('confirmBtn').disabled = true;
+  document.getElementById('resetBtn').disabled = true;
   showToast('Confirmed — thank you');
 }
 function makeCorrection(){
   document.getElementById('doneBanner').classList.remove('show');
   document.getElementById('statusBar').classList.remove('locked');
   document.getElementById('formCard').classList.remove('locked');
+  document.getElementById('confirmBtn').disabled = !isValid();
+  document.getElementById('resetBtn').disabled = false;
 }
 
 initState();
